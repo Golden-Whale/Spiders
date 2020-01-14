@@ -21,7 +21,7 @@ def get_total_number(url):
     # 得到章节的所有页数
     url = host + url
     res = requests.get(url)
-    total_number = re.search('第 1 页・共 (.*?) 页', res.text).group(1)
+    total_number = re.search('页・共 (.*?) 页', res.text).group(1)
     return total_number
 
 
@@ -79,7 +79,7 @@ def run(url, comic_title):
 
 if __name__ == '__main__':
     cartoon_id = input("请输入漫画岛漫画的ID:")
-    pool_num = int(input("请输入进程数:"))
+    pool_num = int(input("请输入进程数:")) + 1
     p = Pool(pool_num)
     chapter = get_chapters(cartoon_id)
     cartoon_title = get_cartoon_title(cartoon_id)
