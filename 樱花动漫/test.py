@@ -8,6 +8,8 @@ import requests
 headers = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36",
     "referer": "http://www.imomoe.io/view/7715.html"}
+# 用户选择漫画的名称
+user_name = ''
 
 
 def get_chapter_url(path_url):
@@ -37,10 +39,10 @@ def get_video_url(url):
     res.encoding = "gbk"
     # print(res.text)
     data = eval(res.text.split('VideoListJson=')[1].split(",urlinfo")[0])
-    # print(data)
-    for index, each in enumerate(data):
-        print(f"播放地址{index + 1}")
-        [print(i.split('$')[0], i.split('$')[1]) for i in each[1]]
+    index = int(input("查询到%s个播放地址, 请选择:" % len(data)))
+    with open(f"./{user_name}.txt", 'w', encoding='utf-8') as f:
+        [f.write(i.split('$')[1] + '\n') for i in data[index - 1][1]]
+    print(f"已保存链接到{user_name}文件")
 
 
 def search_video(value):
@@ -49,20 +51,20 @@ def search_video(value):
     res.encoding = 'gbk'
     doc = PyQuery(res.text)
     data = doc("#contrainer > div.fire.l > div.pics ul li").items()
-    data = [each for each in data]
+    data = list(data)
     if len(data) <= 0:
         print("没有搜索到任何记录")
         sys.exit()
     for index, each in enumerate(data):
         print(f"{index + 1}.{each('h2').text()}")
-    user_choice = input("输入下标:")
-    return "http://www.imomoe.io" + data[int(user_choice) - 1]('a').attr("href")
+    user_choice = int(input("输入下标:"))
+    global user_name
+    user_name = data[user_choice - 1]('h2').text()
+    return "http://www.imomoe.io" + data[user_choice - 1]('a').attr("href")
 
 
 if __name__ == '__main__':
-
     search_value = input("输入搜索动漫的名字:")
-    # search_value = 'jojo'
     url = search_video(search_value)
     player_url = get_chapter_url(url)
     get_video_url(player_url)
