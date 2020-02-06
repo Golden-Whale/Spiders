@@ -44,8 +44,8 @@ def get_video_url(url):
 
 
 def search_video(value):
-    url = "http://www.imomoe.io/search.asp"
-    res = requests.post(url, data={'searchword': value.encode("GBK")})
+    url = "http://www.imomoe.in/search.asp"
+    res = requests.post(url, data={'searchword': str(value)})
     res.encoding = 'gbk'
     doc = PyQuery(res.text)
     data = doc("#contrainer > div.fire.l > div.pics ul li").items()
@@ -62,6 +62,7 @@ def search_video(value):
 if __name__ == '__main__':
 
     search_value = input("输入搜索动漫的名字:")
+    # search_value = 'jojo'
     url = search_video(search_value)
     player_url = get_chapter_url(url)
     get_video_url(player_url)
